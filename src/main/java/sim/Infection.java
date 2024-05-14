@@ -1,4 +1,4 @@
-package main.java.sim;
+package sim;
 
 import java.awt.Color;
 
@@ -17,8 +17,9 @@ public class Infection implements Steppable {
 	
 	private Stoppable spreading;
 	
-	private int infectiousDistance = 3;
+	private int infectiousDistance = 1;
 	private double spreadProbability = .3;
+	private double fatalityProbability = 0.1;
 	
 	public enum InfectionStatus {
 	    EXPOSED,
@@ -72,7 +73,7 @@ public class Infection implements Steppable {
 					
 				});
 				// next, the person will either die... 
-				if(state.random.nextBoolean())
+				if(state.random.nextDouble() < fatalityProbability)
 					nextStatus = InfectionStatus.DEAD;
 				else // ...or gain immunity
 					nextStatus = InfectionStatus.IMMUNE;				
@@ -116,6 +117,7 @@ public class Infection implements Steppable {
 				Person p = (Person) o;
 				Infection i = new Infection(p, InfectionStatus.EXPOSED);
 				world.schedule.scheduleOnce(i);
+				world.newCasesThisTick++; // this is a new infection! Record it!
 			}
 		}
 	}

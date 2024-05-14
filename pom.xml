@@ -1,57 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.springframework</groupId>
-    <artifactId>PumpHandleSim</artifactId>
-    <packaging>jar</packaging>
-    <version>0.1.0</version>
+	<groupId>org.springframework</groupId>
+	<artifactId>PumpHandleSim</artifactId>
+	<packaging>jar</packaging>
+	<version>0.1.0</version>
 
-    <properties>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
-    </properties>
+	<properties>
+	   <maven.compiler.source>22</maven.compiler.source>
+	   <maven.compiler.target>22</maven.compiler.target>
+	</properties>
 
 	<dependencies>
 		<dependency><groupId>eclab</groupId>
 		<artifactId>mason</artifactId>
 		<version>22</version></dependency>
 
-	<!-- https://mvnrepository.com/artifact/junit/junit -->
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>4.13.2</version>
-	    <scope>test</scope>
-	</dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.codehaus.mojo/exec-maven-plugin -->
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>exec-maven-plugin</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 
 	</dependencies>
 
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>main.java.sim.PumpHandleGUI</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+	<build>
+	   <plugins>
+		  <plugin>
+			 <groupId>org.apache.maven.plugins</groupId>
+			 <artifactId>maven-shade-plugin</artifactId>
+			 <version>3.5.3</version>
+			 <executions>
+				<execution>
+					<phase>package</phase>
+					<goals>
+					   <goal>shade</goal>
+					</goals>
+					<configuration>
+					   <transformers>
+						  <transformer
+							 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+							 <mainClass>sim.PumpHandleGUI</mainClass>
+						  </transformer>
+					   </transformers>
+					</configuration>
+				</execution>
+			 </executions>
+		  </plugin>
 
-        </plugins>
-    </build>
+<!--	trying to make the plugin cooperate
+	 <plugin>
+			   <groupId>org.codehaus.mojo</groupId>
+				  <artifactId>exec-maven-plugin</artifactId>
+				  <version>3.2.0</version>
+				  <executions>
+						
+					 <execution>
+						<id>python-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>python3</executable>
+							<workingDirectory>src/test/python</workingDirectory>
+							<arguments>
+							   <argument>-m</argument>
+							   <argument>unittest</argument>
+							   <argument>discover</argument>
+							   <argument>.</argument>
+							</arguments>
+							<environmentVariables>
+					  		  <PYTHONPATH>/usr/local/Cellar/python@3.9/3.9.18/bin/python3.9</PYTHONPATH> 
+				</environmentVariables>
+						</configuration>
+					 </execution>
+					 
+					 
+				  </executions>
+				  
+			   </plugin>
+-->
+	   </plugins>
+	</build>
 </project>
