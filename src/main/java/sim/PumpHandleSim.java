@@ -44,7 +44,7 @@ public class PumpHandleSim extends SimState {
 	//
 	
 	public PumpHandleSim(long seed) {
-		this(seed, 10, 10, 20, 1);
+		this(seed, 100, 100, 8000, 1);
 	}
 
 	public PumpHandleSim(long seed, int grid_width, int grid_height, int num_people, int num_infections_seeded) {

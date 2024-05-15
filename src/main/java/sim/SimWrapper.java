@@ -14,7 +14,7 @@ public class SimWrapper {
 				System.out.println("Printing out SIMULATION INFORMATION to " + filename);
 		
 			// Create new buffered writer to store this information in
-			BufferedWriter exportFile = new BufferedWriter(new FileWriter(filename, true));
+			BufferedWriter exportFile = new BufferedWriter(new FileWriter(filename, false));
 			
 			// write a new heading 
 			//exportFile.write("Seed\tNumberOfAgents\tSimuilationDuration" + "\n");

@@ -9,7 +9,7 @@ from scipy.stats import shapiro
 
 
 
-class TestIfNormal(unittest.TestCase):
+class TestPomPatterns(unittest.TestCase):
     
     def test_modelGeneratesEpidemicCurve(self):
 
@@ -43,10 +43,10 @@ class TestIfNormal(unittest.TestCase):
             
             normalityOfCases += fit_cases.pvalue < alpha
             normalityOfDeaths += fit_deaths.pvalue < alpha
-            #print(np.array(res[0]))
         
         normalityOfCases /= numIterations
         normalityOfDeaths /= numIterations
         
-        self.assertGreater(normalityOfCases, percentPassing, "Target is: at least {} of instances have normality at level {}".format(percentPassing * 100, alpha))
-        self.assertGreater(normalityOfDeaths, percentPassing, "Target is: at least {} of instances have normality at level {}".format(percentPassing * 100, alpha))
+        failedErrorMessage = "Failed EPIDEMIC CURVE pattern for {} - Outcome: {}% versus Target: {}% of instantiations have normality at level {}"
+        self.assertGreater(normalityOfCases, percentPassing, failedErrorMessage.format("CASES", normalityOfCases * 100, percentPassing * 100, alpha))
+        self.assertGreater(normalityOfDeaths, percentPassing, failedErrorMessage.format("DEATHS", normalityOfDeaths * 100, percentPassing * 100, alpha))
