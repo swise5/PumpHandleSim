@@ -3,6 +3,7 @@ package sim;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import sim.engine.SimState;
@@ -19,8 +20,8 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	boolean alive = true;
 	Color myColor = Color.green;
 	Stoppable myStopper;
-	Infection myInfection = null;
 	HashSet <Class> immuneTo;
+	HashMap <Class, Infection> activeInfections;
 	
 	// basic constructor
 	public Person(int x_loc, int y_loc) {
@@ -31,6 +32,7 @@ public class Person extends SimplePortrayal2D implements Steppable {
 		this.loc = loc; 		// set up initial position
 		myColor = Color.green; 	// default setup: no infection, susceptible
 		immuneTo = new HashSet <Class> (); // not initially immune to anything
+		activeInfections = new HashMap <Class, Infection> (); // not originally infected with anything
 	}
 	
 	@Override
@@ -80,7 +82,13 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	public Int2D getLocation() { return loc; }
 	public String getType() { return "Person"; }
 	public void setStoppable(Stoppable stopper) { myStopper = stopper; }
-	public boolean isInfected() { return myInfection != null; }
+
+	// controlling infection
+	public boolean isInfectedWith(Infection i) { return activeInfections.containsKey(i.getClass()); }
+	public void infectWith(Infection i) { activeInfections.put(i.getClass(), i); }
+	public void resolveInfectionOf(Infection i) { activeInfections.remove(i.getClass()); }
+
+	// controlling immunity
 	public boolean isImmuneTo(Infection i) { return immuneTo.contains(i.getClass()); }
 	public void gainImmunityTo(Infection i) { immuneTo.add(i.getClass()); }
 }

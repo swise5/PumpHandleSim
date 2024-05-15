@@ -33,7 +33,7 @@ public class Infection implements Steppable {
 	public Infection(Person myHost, InfectionStatus myStatus) {
 		host = myHost;
 		status = myStatus;
-		host.myInfection = this;
+		host.infectWith(this);
 	}
 	
 	public Person getHost() { return host; }
@@ -83,7 +83,12 @@ public class Infection implements Steppable {
 			case IMMUNE:
 				spreading.stop();
 				host.setColor(Color.blue);
+
+				// no longer infected
+				host.resolveInfectionOf(this);
 				host.gainImmunityTo(this);
+				
+				// don't update again
 				return state.schedule.AFTER_SIMULATION;
 			
 			case DEAD:
@@ -109,13 +114,17 @@ public class Infection implements Steppable {
 		
 		for(Object o: nearby) { // iterate through others to whom the disease might spread
 			if(o == host) continue; // we're already infecting that person
-			else if (((Person) o).isInfected()) continue; // simplifying assumption that can only have this kind of disease once at a time
+			
+			Person p = (Person) o;
+			
+			if (p.isImmuneTo(this)) continue; 		// can't get diseases to which one has become immune 
+			if (p.isInfectedWith(this)) continue; 	// can't get the disease more than once at a time
+			
 			
 			// potentially spread the disease
 			if(world.random.nextDouble() < spreadProbability) {
 				
 				// they've been exposed - update!
-				Person p = (Person) o;
 				Infection i = new Infection(p, InfectionStatus.EXPOSED);
 				world.schedule.scheduleOnce(i);
 				world.newCasesThisTick++; // this is a new infection! Record it!
