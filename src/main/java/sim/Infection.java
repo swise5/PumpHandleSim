@@ -82,7 +82,8 @@ public class Infection implements Steppable {
 			
 			case IMMUNE:
 				spreading.stop();
-				host.setColor(Color.gray);
+				host.setColor(Color.blue);
+				host.gainImmunityTo(this);
 				return state.schedule.AFTER_SIMULATION;
 			
 			case DEAD:

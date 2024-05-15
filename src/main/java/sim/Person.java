@@ -2,6 +2,8 @@ package sim;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -18,6 +20,7 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	Color myColor = Color.green;
 	Stoppable myStopper;
 	Infection myInfection = null;
+	HashSet <Class> immuneTo;
 	
 	// basic constructor
 	public Person(int x_loc, int y_loc) {
@@ -25,8 +28,9 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	}
 	
 	public Person(Int2D loc) {
-		this.loc = loc;
-		myColor = Color.green;
+		this.loc = loc; 		// set up initial position
+		myColor = Color.green; 	// default setup: no infection, susceptible
+		immuneTo = new HashSet <Class> (); // not initially immune to anything
 	}
 	
 	@Override
@@ -77,4 +81,6 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	public String getType() { return "Person"; }
 	public void setStoppable(Stoppable stopper) { myStopper = stopper; }
 	public boolean isInfected() { return myInfection != null; }
+	public boolean isImmuneTo(Infection i) { return immuneTo.contains(i.getClass()); }
+	public void gainImmunityTo(Infection i) { immuneTo.add(i.getClass()); }
 }
