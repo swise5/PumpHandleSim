@@ -29,11 +29,8 @@ public class PumpHandleSim extends SimState {
 	// RECORDING
 	//
 	
-	ArrayList <Integer> numCases,
-						numDeaths;
-	int newCasesThisTick = 0,
-		newDeathsThisTick = 0,
-		totalCases = 0, totalDeaths = 0;
+	ArrayList <Integer> numCases, numDeaths;
+	int newCasesThisTick = 0, newDeathsThisTick = 0, totalCases = 0, totalDeaths = 0;
 	
 	// OUTPUT
 
@@ -45,14 +42,6 @@ public class PumpHandleSim extends SimState {
 	//
 	//
 	
-/*	public PumpHandleSim(long seed) {
-		this(seed, 100, 100, 8000, 1);
-	}
-
-	public PumpHandleSim(long seed, int grid_width, int grid_height, double perc_people_coverage, int num_infections_seeded) {
-		this(seed, grid_width, grid_height, (int)(perc_people_coverage * grid_width * grid_height), num_infections_seeded);
-	}	
-*/	
 	public PumpHandleSim(long seed) {
 		this(seed, Thread.currentThread().getContextClassLoader().getResource("").getPath() + "default.properties");
 	}
@@ -78,7 +67,9 @@ public class PumpHandleSim extends SimState {
 			if(simProps.containsKey("numPeople"))
 				numPeople = Integer.parseInt(simProps.getProperty("numPeople"));
 			else if(simProps.containsKey("percPeople"))
-				numPeople = (int)(Double.parseDouble(simProps.getProperty("percPeople")) * gridWidth * gridHeight); 
+				numPeople = (int)(Double.parseDouble(simProps.getProperty("percPeople")) * gridWidth * gridHeight);
+			else
+				numPeople = gridWidth * gridHeight; // otherwise, assume complete coverage
 			
 			// set up the initial infection
 			numInitialCases = Integer.parseInt(simProps.getProperty("numInitialCases"));
@@ -87,11 +78,6 @@ public class PumpHandleSim extends SimState {
 			System.exit(0);
 		}
 		
-		//
-		// set up empty holders
-		//
-		numCases = new ArrayList <Integer> ();
-		numDeaths = new ArrayList <Integer> (); 
 	}
 	
 	//
@@ -103,9 +89,15 @@ public class PumpHandleSim extends SimState {
 	public void start() {
 		super.start();
 		
+		//
+		// set up empty holders
+		//
+		numCases = new ArrayList <Integer> ();
+		numDeaths = new ArrayList <Integer> (); 		
 		
-		
+		//
 		// initialise individual PEOPLE
+		//
 		for(int i = 0; i < numPeople; i++) {
 			
 			// find a random spot
@@ -123,7 +115,9 @@ public class PumpHandleSim extends SimState {
 			person.setStoppable(schedule.scheduleRepeating(person));
 		}
 		
-		// pick a random person and give them the disease
+		//
+		// set up DISEASE
+		//
 		Person indexCase = (Person) personGrid.allObjects.get(0);
 		Infection i = new Infection(indexCase, Infection.InfectionStatus.EXPOSED);
 		schedule.scheduleOnce(i);

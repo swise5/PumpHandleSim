@@ -11,6 +11,7 @@ import sim.util.Int2D;
 
 public class Infection implements Steppable {
 
+	final private String variant;
 	private Person host;
 	private InfectionStatus status;
 	private InfectionStatus nextStatus;
@@ -28,9 +29,12 @@ public class Infection implements Steppable {
 	    DEAD; 
 	}
 	
-	
-	
 	public Infection(Person myHost, InfectionStatus myStatus) {
+		this("default", myHost, myStatus);
+	}
+	
+	public Infection(String variantName, Person myHost, InfectionStatus myStatus) {
+		variant = variantName;
 		host = myHost;
 		status = myStatus;
 		host.myInfection = this;
@@ -115,10 +119,12 @@ public class Infection implements Steppable {
 				
 				// they've been exposed - update!
 				Person p = (Person) o;
-				Infection i = new Infection(p, InfectionStatus.EXPOSED);
+				Infection i = new Infection(variant, p, InfectionStatus.EXPOSED);
 				world.schedule.scheduleOnce(i);
 				world.newCasesThisTick++; // this is a new infection! Record it!
 			}
 		}
 	}
+	
+	public String getVariant() { return variant; }
 }
