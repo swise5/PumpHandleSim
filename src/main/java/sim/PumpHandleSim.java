@@ -47,6 +47,10 @@ public class PumpHandleSim extends SimState {
 		this(seed, 100, 100, 8000, 1);
 	}
 
+	public PumpHandleSim(long seed, int grid_width, int grid_height, double perc_people_coverage, int num_infections_seeded) {
+		this(seed, grid_width, grid_height, (int)(perc_people_coverage * grid_width * grid_height), num_infections_seeded);
+	}	
+	
 	public PumpHandleSim(long seed, int grid_width, int grid_height, int num_people, int num_infections_seeded) {
 		super(seed);
 		gridWidth = grid_width;
