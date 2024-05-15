@@ -1,6 +1,8 @@
 package sim;
 
 import java.util.ArrayList;
+import java.util.Properties;
+import java.io.FileInputStream;
 
 import sim.engine.*;
 import sim.field.grid.*;
@@ -27,8 +29,8 @@ public class PumpHandleSim extends SimState {
 	// RECORDING
 	//
 	
-	ArrayList <Integer> numCases = new ArrayList <Integer> (),
-						numDeaths = new ArrayList <Integer> ();
+	ArrayList <Integer> numCases,
+						numDeaths;
 	int newCasesThisTick = 0,
 		newDeathsThisTick = 0,
 		totalCases = 0, totalDeaths = 0;
@@ -43,23 +45,53 @@ public class PumpHandleSim extends SimState {
 	//
 	//
 	
-	public PumpHandleSim(long seed) {
+/*	public PumpHandleSim(long seed) {
 		this(seed, 100, 100, 8000, 1);
 	}
 
 	public PumpHandleSim(long seed, int grid_width, int grid_height, double perc_people_coverage, int num_infections_seeded) {
 		this(seed, grid_width, grid_height, (int)(perc_people_coverage * grid_width * grid_height), num_infections_seeded);
 	}	
+*/	
+	public PumpHandleSim(long seed) {
+		this(seed, Thread.currentThread().getContextClassLoader().getResource("").getPath() + "default.properties");
+	}
 	
-	public PumpHandleSim(long seed, int grid_width, int grid_height, int num_people, int num_infections_seeded) {
+	public PumpHandleSim(long seed, String propertiesFile){//, int grid_width, int grid_height, int num_people, int num_infections_seeded) {
 		super(seed);
-		gridWidth = grid_width;
-		gridHeight = grid_height;
 		
-		// initialise objects to hold environment
-		personGrid = new SparseGrid2D(grid_width, grid_height);
-		this.numPeople = num_people;
-		this.numInitialCases = num_infections_seeded;
+		//
+		// read in properties
+		//
+		
+
+		Properties simProps = new Properties();
+		try {
+			simProps.load(new FileInputStream(propertiesFile));
+			
+			// set up the environment
+			gridWidth = Integer.parseInt(simProps.getProperty("gridWidth"));
+			gridHeight = Integer.parseInt(simProps.getProperty("gridHeight"));
+			personGrid = new SparseGrid2D(gridWidth, gridHeight);
+
+			// populate the environment
+			if(simProps.containsKey("numPeople"))
+				numPeople = Integer.parseInt(simProps.getProperty("numPeople"));
+			else if(simProps.containsKey("percPeople"))
+				numPeople = (int)(Double.parseDouble(simProps.getProperty("percPeople")) * gridWidth * gridHeight); 
+			
+			// set up the initial infection
+			numInitialCases = Integer.parseInt(simProps.getProperty("numInitialCases"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+		//
+		// set up empty holders
+		//
+		numCases = new ArrayList <Integer> ();
+		numDeaths = new ArrayList <Integer> (); 
 	}
 	
 	//
@@ -70,6 +102,8 @@ public class PumpHandleSim extends SimState {
 
 	public void start() {
 		super.start();
+		
+		
 		
 		// initialise individual PEOPLE
 		for(int i = 0; i < numPeople; i++) {

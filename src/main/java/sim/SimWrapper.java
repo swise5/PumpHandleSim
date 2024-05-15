@@ -34,29 +34,21 @@ public class SimWrapper {
 	
 	public static void main(String [] args) {
 
-		// read in params
-		int maxTime = Integer.parseInt(args[0]);
-		String outputFilename = args[1];
-		
 		// set the seed
 		Long seed;
 		try {
-			seed = Long.parseLong(args[2]);			
+			seed = Long.parseLong(args[0]);
 		} catch (Exception e){
 			seed = System.currentTimeMillis();
 		}
 		
-		int width, height, people;
-		try {
-			width = Integer.parseInt(args[3]);
-			height = Integer.parseInt(args[4]);
-			people = Integer.parseInt(args[5]);
-		} catch (Exception e) {
-			width = 10; height = 10; people = 20;
-		}
-				
+		// read in params
+		int maxTime = Integer.parseInt(args[1]);
+		String propertiesFilename = args[2];
+		String outputFilename = args[3];
+		
 		// run the simulation
-		PumpHandleSim sim = new PumpHandleSim(seed, width, height, people, 1);
+		PumpHandleSim sim = new PumpHandleSim(seed, propertiesFilename);
 		sim.start();
 		while(!sim.schedule.scheduleComplete() && sim.schedule.getTime() < maxTime)
 			sim.schedule.step(sim);

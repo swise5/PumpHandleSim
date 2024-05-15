@@ -11,31 +11,37 @@ from scipy.stats import shapiro
 
 class TestPomPatterns(unittest.TestCase):
     
+    def util_exportPropertiesFile(self, filename, varDict):
+        with open(filename, 'w') as f:
+            for x in varDict:
+                f.write("{}={}\n".format(x, varDict[x]))
+    
     def test_modelGeneratesEpidemicCurve(self):
-
+        
+        # standards at which we're testing the pattern
         alpha = .05
         percentPassing = .8
 
-        wd = os.getcwd()
-        pythonDirPath = "src/test/python"
-        pathToTarget = wd.removesuffix(pythonDirPath) + "target/PumpHandleSim-0.1.0.jar"
-        print(pathToTarget)
-        
+        # paths to important data
+        baseDir = os.getcwd().removesuffix("src/test/python")
+        pathToTarget = baseDir + "target/PumpHandleSim-0.1.0.jar"
+        outputDir = baseDir + "scratch/"
+        paramFile = baseDir + "src/test/python/resources/epiCurvePDDTest.properties"
 
-        outputDir = "/Users/swise/workspace/PumpHandleSim/scratch/"
-        duration = str(50)
-        gridWidth = str(10)
-        gridHeight = str(10)
-        numPeople = str(80)
+        # export the properties file
+        self.util_exportPropertiesFile(paramFile, {"numPeople": 80, "gridWidth": 10, "gridHeight": 10, "numInitialCases":1})
 
+        print(paramFile)
         # metrics to track quality
         normalityOfCases = 0
         normalityOfDeaths = 0
-                
+
+        # controlling the instances                
         numIterations = 4
+        duration = str(50)
         for seed in range(numIterations):
             outputFile = outputDir + "testingNormality_" + str(seed) + ".csv"
-            command = " ".join(["java -classpath", pathToTarget, "sim.SimWrapper ", duration, outputFile, str(seed), gridWidth, gridHeight, numPeople])
+            command = " ".join(["java -classpath", pathToTarget, "sim.SimWrapper ", str(seed), duration, paramFile, outputFile])
             os.system(command)
             res = pd.read_table(outputFile, sep=',', header=None)
             fit_cases = shapiro(res.loc[0]) # cases
