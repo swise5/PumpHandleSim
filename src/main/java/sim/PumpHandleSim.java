@@ -18,6 +18,7 @@ public class PumpHandleSim extends SimState {
 	int gridWidth, gridHeight;
 	int numPeople;
 	int numInitialCases;
+	int numInitialImmune;
 	
 	//
 	// ENVIRONMENT
@@ -78,10 +79,19 @@ public class PumpHandleSim extends SimState {
 			if(simProps.containsKey("numPeople"))
 				numPeople = Integer.parseInt(simProps.getProperty("numPeople"));
 			else if(simProps.containsKey("percPeople"))
-				numPeople = (int)(Double.parseDouble(simProps.getProperty("percPeople")) * gridWidth * gridHeight); 
+				numPeople = (int)(Double.parseDouble(simProps.getProperty("percPeople")) * gridWidth * gridHeight);
 			
 			// set up the initial infection
 			numInitialCases = Integer.parseInt(simProps.getProperty("numInitialCases"));
+
+			// set up immunity
+			if(simProps.containsKey("numInitialImmune"))
+				numInitialImmune = Integer.parseInt(simProps.getProperty("numInitialImmune"));
+			else if(simProps.containsKey("percInitialImmune"))
+				numInitialImmune = (int)(Double.parseDouble(simProps.getProperty("percInitialImmune")) * numPeople); 
+			else
+				numInitialImmune = 0;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -121,6 +131,7 @@ public class PumpHandleSim extends SimState {
 			
 			// add them to the schedule and save the stopper (so that they can stop updating if they die)
 			person.setStoppable(schedule.scheduleRepeating(person));
+			
 		}
 		
 		// pick a random person and give them the disease

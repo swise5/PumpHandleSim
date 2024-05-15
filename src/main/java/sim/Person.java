@@ -91,4 +91,5 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	// controlling immunity
 	public boolean isImmuneTo(Infection i) { return immuneTo.contains(i.getClass()); }
 	public void gainImmunityTo(Infection i) { immuneTo.add(i.getClass()); }
+	public void gainImmunityTo(Class c) { immuneTo.add(c); }
 }
