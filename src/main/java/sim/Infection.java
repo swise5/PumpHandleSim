@@ -129,7 +129,6 @@ public class Infection implements Steppable {
 			if(world.random.nextDouble() < spreadProbability) {
 				
 				// they've been exposed - update!
-				Person p = (Person) o;
 				Infection i = new Infection(variant, p, InfectionStatus.EXPOSED);
 				world.schedule.scheduleOnce(i);
 				world.newCasesThisTick++; // this is a new infection! Record it!
