@@ -7,7 +7,7 @@ import pandas as pd
 from scipy.stats import shapiro
 import matplotlib.pyplot as plt
 #from numpy.random import randn
-
+import matplotlib.pyplot as plt
 
 
 class TestPomPatterns(unittest.TestCase):
@@ -61,7 +61,7 @@ class TestPomPatterns(unittest.TestCase):
             axesIndex += 1
     
         #plt.show()
-        plt.savefig(outputFilename)  
+        plt.savefig(outputFilename)      
     
     def test_modelGeneratesEpidemicCurve(self):
         
@@ -86,7 +86,7 @@ class TestPomPatterns(unittest.TestCase):
         recOfDeaths = []
 
         # controlling the instances                
-        numIterations = 4
+        numIterations = 10
         duration = str(50)
         for seed in range(numIterations):
             outputFile = outputDir + "testingNormality_" + str(seed) + ".csv"
@@ -98,15 +98,16 @@ class TestPomPatterns(unittest.TestCase):
             normalityOfDeaths += fit_deaths.pvalue < alpha
             recOfCases.append(res["cases"])
             recOfDeaths.append(res["deaths"])
-        
+            print(".")
+
         normalityOfCases /= numIterations
         normalityOfDeaths /= numIterations
-        
+
         # export image
         dataHolder = {"Cases": recOfCases, "Deaths": recOfDeaths}
         #self.util_exportHistograms(dataHolder, dataHolder.keys(), outputDir + "hist.png")
-        self.util_exportMultiTraces(dataHolder, dataHolder.keys(), outputDir + "epidemicCurveVisualisation.png")
-        
+        self.util_exportMultiTraces(dataHolder, dataHolder.keys(), outputDir + "epidemicCurveVisualisation.png", alpha=.1)
+
         failedErrorMessage = "Failed EPIDEMIC CURVE pattern for {} - Outcome: {}% versus Target: {}% of instantiations have normality at level {}"
         self.assertGreater(normalityOfCases, percentPassing, failedErrorMessage.format("CASES", normalityOfCases * 100, percentPassing * 100, alpha))
         self.assertGreater(normalityOfDeaths, percentPassing, failedErrorMessage.format("DEATHS", normalityOfDeaths * 100, percentPassing * 100, alpha))
