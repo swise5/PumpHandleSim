@@ -19,7 +19,7 @@ public class Infection implements Steppable {
 	private Stoppable spreading;
 	
 	private int infectiousDistance = 1;
-	private double spreadProbability = .3;
+	private double spreadProbability = .05;
 	private double fatalityProbability = 0.1;
 	
 	public enum InfectionStatus {
