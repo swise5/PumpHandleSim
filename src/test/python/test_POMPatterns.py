@@ -76,7 +76,7 @@ class TestPomPatterns(unittest.TestCase):
         paramFile = baseDir + "src/test/python/resources/epiCurvePDDTest.properties"
 
         # export the properties file
-        self.util_exportPropertiesFile(paramFile, {"percPeople": 80, "gridWidth": 10, "gridHeight": 10, "infection_default_num":1})
+        self.util_exportPropertiesFile(paramFile, {"percPeople": 80, "gridWidth": 50, "gridHeight": 50, "infection_default_num":1})
 
         print(paramFile)
         # metrics to track quality
