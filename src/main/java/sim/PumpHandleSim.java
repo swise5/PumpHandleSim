@@ -1,7 +1,11 @@
 package sim;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.awt.Color;
 import java.io.FileInputStream;
 
 import sim.engine.*;
@@ -17,8 +21,8 @@ public class PumpHandleSim extends SimState {
 	
 	int gridWidth, gridHeight;
 	int numPeople;
-	int numInitialCases;
-	int numInitialImmune;
+	HashMap <String, Integer> numInitialCases;
+	HashMap <String, Integer> numInitialImmune;
 	
 	//
 	// ENVIRONMENT
@@ -72,22 +76,52 @@ public class PumpHandleSim extends SimState {
 			else
 				numPeople = gridWidth * gridHeight; // otherwise, assume complete coverage
 			
-			// set up the initial infection
-			numInitialCases = Integer.parseInt(simProps.getProperty("numInitialCases"));
+			// set up the initial infections
+			numInitialCases = new HashMap <String, Integer> ();
+			numInitialImmune = new HashMap <String, Integer> ();
+			for(Object o: simProps.keySet()) {
+				String key = (String) o;
+				
+				// read in the infections
+				if(key.startsWith("infection_"))
+					readInInfectionSpecificInfo(key, (String)simProps.getProperty(key), numInitialCases);
 
-			// set up immunity
+				
+				else if(key.startsWith("immunity_"))
+					readInInfectionSpecificInfo(key, (String)simProps.getProperty(key), numInitialImmune);
+				
+				//...and any immunities
+			}
+			
+			
+			
+			//numInitialCases = Integer.parseInt(simProps.getProperty("numInitialCases"));
+
+/*			// set up immunity
 			if(simProps.containsKey("numInitialImmune"))
 				numInitialImmune = Integer.parseInt(simProps.getProperty("numInitialImmune"));
 			else if(simProps.containsKey("percInitialImmune"))
 				numInitialImmune = (int)(Double.parseDouble(simProps.getProperty("percInitialImmune")) * numPeople); 
 			else
 				numInitialImmune = 0;
+				*/
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
 		
+	}
+	
+	void readInInfectionSpecificInfo(String key, String value, HashMap <String, Integer> holder){
+		String [] keyBits = key.split("_");
+		String disease = keyBits[1]; // extract disease variant name
+		String numOrPerc = keyBits[2]; // number or percentage?
+
+		if(numOrPerc.equals("num"))
+			holder.put(disease, Integer.parseInt(value));
+		else if(numOrPerc.equals("perc"))
+			holder.put(disease, (int)(Double.parseDouble(value) * numPeople));
 	}
 	
 	//
@@ -126,12 +160,77 @@ public class PumpHandleSim extends SimState {
 			
 		}
 		
+		
+		//
+		// set up IMMUNITY
+		//
+		for(Entry<String, Integer> entry: numInitialImmune.entrySet()) {
+			
+			// extract information about the disease
+			String myDisease = entry.getKey();
+			int numImmune = entry.getValue();
+			
+			// check: we can't instantiate more cases of disease than people
+			if(numImmune > numPeople) {
+				System.out.println("ERROR: cannot have more immune than people in the simulation");
+				System.exit(0);
+			}
+			
+			// set up a helper variable
+			HashSet <Person> consideredImmunePersons = new HashSet <Person> ();
+			
+			// create this number of cases for the given disease
+			for(int i = 0; i < numImmune; i++) {
+				
+				// find someone new to immunise
+				Person potentialImmune = (Person) personGrid.allObjects.get(random.nextInt(numPeople));
+				while(consideredImmunePersons.contains(potentialImmune)) // find someone we've not yet considered
+					potentialImmune = (Person) personGrid.allObjects.get(random.nextInt(numPeople));
+				
+				// create the immunity
+				potentialImmune.gainImmunityTo(myDisease);
+				consideredImmunePersons.add(potentialImmune);
+				potentialImmune.setColor(Color.gray);
+			}
+		}
+		
 		//
 		// set up DISEASE
 		//
-		Person indexCase = (Person) personGrid.allObjects.get(0);
-		Infection i = new Infection(indexCase, Infection.InfectionStatus.EXPOSED);
-		schedule.scheduleOnce(i);
+		for(Entry<String, Integer> entry: numInitialCases.entrySet()) {
+			
+			// extract information about the disease
+			String myDisease = entry.getKey();
+			int numCases = entry.getValue();
+			
+			// check: we can't instantiate more cases of disease than people
+			if(numCases > numPeople) {
+				System.out.println("ERROR: cannot have more cases than people in the simulation");
+				System.exit(0);
+			}
+			
+			// set up a helper variable
+			HashSet <Person> consideredHosts = new HashSet <Person> ();
+			
+			// create this number of cases for the given disease
+			for(int i = 0; i < numCases; i++) {
+				
+				// find someone new to infect
+				Person potentialCase = (Person) personGrid.allObjects.get(random.nextInt(numPeople));
+				while(consideredHosts.contains(potentialCase)) // find someone we've not yet considered
+					potentialCase = (Person) personGrid.allObjects.get(random.nextInt(numPeople));
+				
+				// store the new case in the local record
+				consideredHosts.add(potentialCase);
+				if(potentialCase.isImmuneTo(myDisease))
+					continue; // don't actually create the infection, if they're immune to this specifically!
+
+				// create the infection
+				Infection infection = new Infection(myDisease, potentialCase, Infection.InfectionStatus.EXPOSED);
+				schedule.scheduleOnce(infection);
+				
+			}
+		}
 
 		schedule.addAfter(new Steppable() {
 

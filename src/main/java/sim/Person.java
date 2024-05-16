@@ -20,8 +20,8 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	boolean alive = true;
 	Color myColor = Color.green;
 	Stoppable myStopper;
-	HashSet <Class> immuneTo;
-	HashMap <Class, Infection> activeInfections;
+	HashSet <String> immuneTo;
+	HashMap <String, Infection> activeInfections;
 	
 	// basic constructor
 	public Person(int x_loc, int y_loc) {
@@ -31,8 +31,8 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	public Person(Int2D loc) {
 		this.loc = loc; 		// set up initial position
 		myColor = Color.green; 	// default setup: no infection, susceptible
-		immuneTo = new HashSet <Class> (); // not initially immune to anything
-		activeInfections = new HashMap <Class, Infection> (); // not originally infected with anything
+		immuneTo = new HashSet <String> (); // not initially immune to anything
+		activeInfections = new HashMap <String, Infection> (); // not originally infected with anything
 	}
 	
 	@Override
@@ -84,12 +84,13 @@ public class Person extends SimplePortrayal2D implements Steppable {
 	public void setStoppable(Stoppable stopper) { myStopper = stopper; }
 
 	// controlling infection
-	public boolean isInfectedWith(Infection i) { return activeInfections.containsKey(i.getClass()); }
-	public void infectWith(Infection i) { activeInfections.put(i.getClass(), i); }
-	public void resolveInfectionOf(Infection i) { activeInfections.remove(i.getClass()); }
+	public boolean isInfectedWith(Infection i) { return activeInfections.containsKey(i.getVariant()); }
+	public void infectWith(Infection i) { activeInfections.put(i.getVariant(), i); }
+	public void resolveInfectionOf(Infection i) { activeInfections.remove(i.getVariant()); }
 
 	// controlling immunity
-	public boolean isImmuneTo(Infection i) { return immuneTo.contains(i.getClass()); }
-	public void gainImmunityTo(Infection i) { immuneTo.add(i.getClass()); }
-	public void gainImmunityTo(Class c) { immuneTo.add(c); }
+	public boolean isImmuneTo(String variantName) { return immuneTo.contains(variantName); }
+	public boolean isImmuneTo(Infection i) { return immuneTo.contains(i.getVariant()); }
+	public void gainImmunityTo(Infection i) { immuneTo.add(i.getVariant()); }
+	public void gainImmunityTo(String variantName) { immuneTo.add(variantName); }
 }
