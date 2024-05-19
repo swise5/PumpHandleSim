@@ -1,6 +1,5 @@
 import os
 import sys
-import numpy
 
 PROJECT_PATH = os.getcwd()
 SOURCE_PATH = os.path.join(

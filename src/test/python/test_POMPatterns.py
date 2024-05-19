@@ -70,10 +70,10 @@ class TestPomPatterns(unittest.TestCase):
         percentPassing = .8
 
         # paths to important data
-        baseDir = os.getcwd().removesuffix("src/test/python")
+        baseDir = os.getcwd()#[:-len("c/test/python")]#.removesuffix("src/test/python")
         pathToTarget = baseDir + "target/PumpHandleSim-0.1.0.jar"
-        outputDir = baseDir + "scratch/"
-        paramFile = baseDir + "src/test/python/resources/epiCurvePDDTest.properties"
+        outputDir = baseDir + "/scratch/"
+        paramFile = baseDir + "/src/test/python/resources/epiCurvePDDTest.properties"
 
         # export the properties file
         self.util_exportPropertiesFile(paramFile, {"percPeople": 80, "gridWidth": 50, "gridHeight": 50, "infection_default_num":1})
@@ -120,12 +120,12 @@ class TestPomPatterns(unittest.TestCase):
         percentPassing = .8
 
         # paths to important data
-        baseDir = os.getcwd().removesuffix("src/test/python")
-        pathToTarget = baseDir + "target/PumpHandleSim-0.1.0.jar"
-        outputDir = baseDir + "scratch/"
+        baseDir = os.getcwd()#[:-len("c/test/python")] # use "removesuffix" on python 3.9
+        pathToTarget = baseDir + "/target/PumpHandleSim-0.1.0.jar"
+        outputDir = baseDir + "/scratch/"
 
         # ...and to new param files
-        paramDir = baseDir + "src/test/python/resources/"
+        paramDir = baseDir + "/src/test/python/resources/"
         paramFile_unvax = paramDir + "herdImmunityPDDTest_novax.properties"
         paramFile_hivax = paramDir + "herdImmunityPDDTest_hivax.properties"
 
