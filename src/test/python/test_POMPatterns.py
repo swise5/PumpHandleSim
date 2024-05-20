@@ -106,8 +106,7 @@ class TestPomPatterns(unittest.TestCase):
         # export image
         dataHolder = {"Cases": recOfCases, "Deaths": recOfDeaths}
         #self.util_exportHistograms(dataHolder, dataHolder.keys(), outputDir + "hist.png")
-        self.util_exportMultiTraces(dataHolder, dataHolder.keys(), outputDir + "epidemicCurveVisualisation.png", alpha=.1)
-
+        #self.util_exportMultiTraces(dataHolder, dataHolder.keys(), outputDir + "epidemicCurveVisualisation.png", alpha=.1)                
         failedErrorMessage = "Failed EPIDEMIC CURVE pattern for {} - Outcome: {}% versus Target: {}% of instantiations have normality at level {}"
         self.assertGreater(normalityOfCases, percentPassing, failedErrorMessage.format("CASES", normalityOfCases * 100, percentPassing * 100, alpha))
         self.assertGreater(normalityOfDeaths, percentPassing, failedErrorMessage.format("DEATHS", normalityOfDeaths * 100, percentPassing * 100, alpha))

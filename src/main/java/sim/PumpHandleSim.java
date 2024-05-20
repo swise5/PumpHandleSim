@@ -36,6 +36,7 @@ public class PumpHandleSim extends SimState {
 	
 	ArrayList <Integer> numCases, numDeaths;
 	int newCasesThisTick = 0, newDeathsThisTick = 0, totalCases = 0, totalDeaths = 0;
+	Infection indexCase = null;
 	
 	// OUTPUT
 
@@ -48,7 +49,7 @@ public class PumpHandleSim extends SimState {
 	//
 	
 	public PumpHandleSim(long seed) {
-		this(seed, Thread.currentThread().getContextClassLoader().getResource("").getPath() + "default.properties");
+		this(seed, Thread.currentThread().getContextClassLoader().getResource("default.properties").getPath());//.currentThread().getContextClassLoader().getResource("").getPath() + "default.properties");
 	}
 	
 	public PumpHandleSim(long seed, String propertiesFile){//, int grid_width, int grid_height, int num_people, int num_infections_seeded) {
@@ -197,6 +198,7 @@ public class PumpHandleSim extends SimState {
 		//
 		// set up DISEASE
 		//
+
 		for(Entry<String, Integer> entry: numInitialCases.entrySet()) {
 			
 			// extract information about the disease
@@ -249,6 +251,7 @@ public class PumpHandleSim extends SimState {
 			}
 			
 		});
+		
 	}
 	
 	//
@@ -287,6 +290,4 @@ public class PumpHandleSim extends SimState {
 	private Int2D pickRandomLocation(int width, int height) {
 		return new Int2D(random.nextInt(width), random.nextInt(height));
 	}
-	
-
 }
