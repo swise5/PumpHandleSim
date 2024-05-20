@@ -39,7 +39,7 @@ public class Infection implements Steppable {
 		status = myStatus;
 		host.myInfection = this;
 	}
-	
+
 	public Person getHost() { return host; }
 
 	@Override
@@ -127,4 +127,7 @@ public class Infection implements Steppable {
 	}
 	
 	public String getVariant() { return variant; }
+	public void changeInfectiousDistance(int distance) { this.infectiousDistance = distance; }
+	public void changeSpreadProbability(double probability) { this.spreadProbability = probability; }
+	public void changeFatalityProbability(double probability) { this.fatalityProbability = probability; }
 }

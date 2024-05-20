@@ -1,5 +1,6 @@
 sim/Person.class
 sim/Infection.class
+sim/SimWrapper.class
 sim/PumpHandleSim$1.class
 sim/PumpHandleGUI.class
 sim/Infection$InfectionStatus.class
