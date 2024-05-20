@@ -8,11 +8,7 @@ import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
 import sim.engine.SimState;
-import sim.field.grid.SparseGrid2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
-import sim.portrayal.simple.CircledPortrayal2D;
-import sim.portrayal.simple.LabelledPortrayal2D;
-import sim.portrayal.simple.OvalPortrayal2D;
 
 public class PumpHandleGUI extends GUIState {
 

@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 
 import sim.engine.*;
 import sim.field.grid.*;
-import sim.util.Bag;
 import sim.util.Int2D;
 
 public class PumpHandleSim extends SimState {
@@ -230,7 +229,7 @@ public class PumpHandleSim extends SimState {
 				// create the infection
 				Infection infection = new Infection(myDisease, potentialCase, Infection.InfectionStatus.EXPOSED);
 				schedule.scheduleOnce(infection);
-				
+				if(this.indexCase == null) indexCase = infection;
 			}
 		}
 

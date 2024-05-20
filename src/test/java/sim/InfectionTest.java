@@ -3,6 +3,8 @@ package sim;
 
 import static org.junit.Assert.*;
 
+import java.util.Map.Entry;
+
 import org.junit.Test;
 
 
@@ -48,6 +50,10 @@ public class InfectionTest {
 			sut.schedule.step(sut);
 
 		// check to make sure it DOES spread
-		assertEquals(sut.totalCases, sut.numPeople - sut.numInitialCases); // we don't count the initial cases
+		int numInitialCases = 0;
+		for(Entry<String, Integer> e: sut.numInitialCases.entrySet())
+			numInitialCases += e.getValue();
+		
+		assertEquals(sut.totalCases, sut.numPeople - numInitialCases); // we don't count the initial cases
     }
 }
